@@ -15,7 +15,30 @@
 
   <meta name="theme-color" content="#fafafa">
 
-  <script type="text/javascript" src="js/download.js"></script>
+  <script type="text/javascript">
+    // 点击下载后显示动画
+    function showLoadingAnimation() {
+      let c = document.getElementById('canvas');
+      c.style.display = 'block';
+
+      let ctx = c.getContext('2d');
+      let width = c.width,height=c.height;
+      if (window.devicePixelRatio) {
+        c.style.width = width + "px";
+        c.style.height = height + "px";
+        c.height = height * window.devicePixelRatio;
+        c.width = width * window.devicePixelRatio;
+        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      }
+
+      ctx.beginPath();
+      ctx.arc(27, 27, 20, -Math.PI * 0.5, Math.PI + Math.PI * 0.3, false);
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.closePath();
+    }
+  </script>
 
   <style>
     #img_logo {
@@ -49,27 +72,48 @@
       height: 40px;
       background-color: dodgerblue;
       border-radius: 27px;
-      position: absolute;
       left: 50%;
       right: 50%;
       margin-left: -75px;
       padding-top: 14px;
       margin-top: 40px;
+      position: relative;
     }
     #a_download {
       color: white;
       font-size: 18px;
       width: 150px;
-      height: 64px;
+      height: 54px;
       display: block;
       text-align: center;
       text-decoration: none;
       -webkit-tap-highlight-color: rgba(0,0,0,0);
+      position: absolute;
     }
     #download_tip {
       font-size: 16px;
       color: #888888;
       margin-top: 40px;
+      display: none;
+    }
+    #canvas {
+      position: absolute;
+      background-color: dodgerblue;
+      border-radius: 27px;
+      display: none;
+      margin-top: -14px;
+      margin-left: 48px;
+      animation: rotate 1s;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+    }
+    @keyframes rotate {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
     }
   </style>
 
@@ -98,17 +142,19 @@
 
   <div id="div_download" align="center">
     <a id="a_download" href="itms-services://?action=download-manifest&url=https://coding.net/u/lining2017/p/ipainfo/git/raw/master/manifest.plist">点击下载</a>
+    <canvas id="canvas" width="54" height="54"></canvas>
   </div>
 
   <div id="download_tip" align="center">
     请使用 iOS 设备下载
   </div>
 
-  <script>
+  <script type="text/javascript">
     let ua = navigator.userAgent.toLowerCase();
     if (ua.indexOf('iphone') > -1 || ua.indexOf('ipad') > -1) {
       document.getElementById('div_download').style.display = 'block';
       document.getElementById('download_tip').style.display = 'none';
+      showLoadingAnimation();
     } else {
       document.getElementById('div_download').style.display = 'none';
       document.getElementById('download_tip').style.display = 'block';
