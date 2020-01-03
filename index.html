@@ -6,7 +6,7 @@
   <title></title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <link rel="shortcut icon" href="favicon.ico">
   <link rel="manifest" href="site.webmanifest">
   <link rel="apple-touch-icon" href="icon.png">
 
@@ -18,6 +18,7 @@
   <script type="text/javascript">
     // 点击下载后显示动画
     function showLoadingAnimation() {
+      document.getElementById('a_download').style.display = 'none';
       let c = document.getElementById('canvas');
       c.style.display = 'block';
 
@@ -119,9 +120,9 @@
 
 </head>
 <body>
-  <img style="width: 100%;" src="https://s2.ax1x.com/2020/01/03/lUpSk8.png">
+  <canvas id="header_canvas" height="200"></canvas>
 
-  <div align="center" style="margin-top: 20px; margin-bottom: 20px">
+  <div align="center" style="margin-top: -20px; margin-bottom: 20px">
     <img id="img_logo" width="120" height="120" alt="" src="https://s2.ax1x.com/2020/01/03/lUPEnA.png">
   </div>
 
@@ -137,7 +138,7 @@
   </div>
 
   <div align="center" style="margin-top: 50px;">
-    <iframe id="img_qrcode" src="img/qrcode_logo.svg", width="150" height="150" frameborder="0"></iframe>
+    <iframe id="img_qrcode" src="img/qrcode_logo.svg" width="150" height="150" frameborder="0"></iframe>
   </div>
 
   <div id="div_download" align="center">
@@ -148,6 +149,46 @@
   <div id="download_tip" align="center">
     请使用 iOS 设备下载
   </div>
+
+  <script type="text/javascript">
+    let canvas = document.getElementById('header_canvas');
+    canvas.width = window.innerWidth;
+
+    let ctx = canvas.getContext('2d');
+    let lines = ["rgba(0,222,255, 0.2)", "rgba(157,192,249, 0.2)", "rgba(0,168,255, 0.2)"];
+    var step = 0;
+    function loop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      step++;
+      //画3个不同颜色的矩形
+      for (let j = lines.length - 1; j >= 0; j--) {
+        ctx.fillStyle = lines[j];
+        //每个矩形的角度都不同，每个之间相差45度
+        let angle = (step + j * 45) * Math.PI / 180;
+        let deltaHeight = Math.sin(angle) * 50;
+        let deltaHeightRight = Math.cos(angle) * 50;
+        ctx.beginPath();
+
+        ctx.moveTo(0, (canvas.height - 100) / 2 - deltaHeight);
+        ctx.bezierCurveTo(canvas.width / 2, (canvas.height - 100) / 2 - deltaHeight + 50, canvas.width / 2, (canvas.height - 100) / 2 - deltaHeightRight + 50, canvas.width, (canvas.height - 100) / 2 - deltaHeightRight);
+        ctx.lineTo(canvas.width, 0);
+        ctx.lineTo(0, 0);
+        ctx.lineTo(0, (canvas.height - 100) / 2 - deltaHeight);
+        ctx.closePath();
+        ctx.fill();
+      }
+      requestAnimFrame(loop);
+    }
+
+    window.requestAnimFrame = (function(){
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        function( callback ){
+          window.setTimeout(callback, 1000 / 60);
+        };
+    })();
+    loop();
+  </script>
 
   <script type="text/javascript">
     let ua = navigator.userAgent.toLowerCase();
